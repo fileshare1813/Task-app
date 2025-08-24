@@ -1,0 +1,66 @@
+<%- include('partials/header', { title: 'My Tasks' }) %>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>My Tasks</h2>
+      <a href="/tasks/add" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Add Task
+      </a>
+    </div>
+
+    <% if (tasks.length === 0) { %>
+      <div class="alert alert-info text-center">
+        <i class="fas fa-info-circle me-2"></i>No tasks found. Add your first task!
+      </div>
+    <% } else { %>
+      <div class="row">
+        <% tasks.forEach(task => { %>
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card task-card <%= task.completed ? 'completed' : '' %> <%= task.priority %>">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h5 class="card-title"><%= task.title %></h5>
+                  <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <% if (!task.completed) { %>
+                        <li>
+                          <form action="/tasks/<%= task._id %>/complete" method="POST">
+                            <button type="submit" class="dropdown-item">
+                              <i class="fas fa-check me-2"></i>Mark Complete
+                            </button>
+                          </form>
+                        </li>
+                      <% } %>
+                      <li>
+                        <form action="/tasks/<%= task._id %>/delete" method="POST">
+                          <button type="submit" class="dropdown-item text-danger">
+                            <i class="fas fa-trash me-2"></i>Delete
+                          </button>
+                        </form>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="card-text"><%= task.description || 'No description' %></p>
+                <div class="task-meta d-flex justify-content-between align-items-center">
+                  <span class="badge bg-<%= 
+                    task.priority === 'high' ? 'danger' : 
+                    task.priority === 'medium' ? 'warning' : 'success'
+                  %>">
+                    <%= task.priority %>
+                  </span>
+                  <% if (task.dueDate) { %>
+                    <small class="text-muted">
+                      <i class="far fa-calendar-alt me-1"></i>
+                      <%= new Date(task.dueDate).toLocaleDateString() %>
+                    </small>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+<%- include('partials/footer') %>

@@ -1,0 +1,34 @@
+<%- include('partials/header', { title: 'Dashboard' }) %>
+
+<div class="container">
+  <h2>Welcome, <%= user.name %>!</h2>
+  <%- include('partials/alerts') %>
+  
+  <!-- Notifications -->
+  <% if (messages.success) { %>
+    <div class="alert alert-success"><%= messages.success %></div>
+  <% } %>
+  
+  <!-- Task Creation Form -->
+  <form action="/tasks" method="POST">
+    <input type="hidden" name="user" value="<%= user._id %>">
+    <div class="mb-3">
+      <input type="text" name="title" placeholder="Task title" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Task</button>
+  </form>
+
+  <!-- User's Tasks List -->
+  <div class="tasks">
+    <% tasks.forEach(task => { %>
+      <div class="task-card">
+        <h3><%= task.title %></h3>
+        <% if (task.completed) { %>
+          <span class="badge bg-success">Completed</span>
+        <% } %>
+      </div>
+    <% }); %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

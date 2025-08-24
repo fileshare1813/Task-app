@@ -1,0 +1,17 @@
+<%- include('partials/header', { title: 'Welcome' }) %>
+
+<div class="container text-center mt-5">
+  <h1 class="display-4">Welcome to Task Manager</h1>
+  <p class="lead">Organize your tasks efficiently</p>
+  
+  <% if (!user) { %>
+    <div class="mt-4">
+      <a href="/auth/login" class="btn btn-primary btn-lg mx-2">Login</a>
+      <a href="/auth/register" class="btn btn-outline-primary btn-lg mx-2">Register</a>
+    </div>
+  <% } else { %>
+    <a href="/dashboard" class="btn btn-success btn-lg mt-4">Go to Dashboard</a>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>
