@@ -1,17 +1,68 @@
 <%- include('partials/header', { title: 'Welcome' }) %>
 
-<div class="container text-center mt-5">
-  <h1 class="display-4">Welcome to Task Manager</h1>
-  <p class="lead">Organize your tasks efficiently</p>
-  
-  <% if (!user) { %>
-    <div class="mt-4">
-      <a href="/auth/login" class="btn btn-primary btn-lg mx-2">Login</a>
-      <a href="/auth/register" class="btn btn-outline-primary btn-lg mx-2">Register</a>
+<%- include('partials/alerts') %>
+
+<div class="hero-section text-center py-5">
+  <div class="container">
+    <h1 class="display-4 fw-bold mb-4 text-primary">
+      <i class="fas fa-tasks me-3"></i>Task Manager
+    </h1>
+    <p class="lead mb-5 text-muted">
+      Organize your work and life efficiently. Stay productive, stay focused.
+    </p>
+    
+    <% if (typeof user !== 'undefined' && user) { %>
+      <div class="d-grid gap-2 d-md-block">
+        <a href="/dashboard" class="btn btn-primary btn-lg px-4 me-2">
+          <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+        </a>
+        <a href="/profile" class="btn btn-outline-primary btn-lg px-4">
+          <i class="fas fa-user me-2"></i>View Profile
+        </a>
+      </div>
+    <% } else { %>
+      <div class="d-grid gap-2 d-md-block">
+        <a href="/auth/register" class="btn btn-primary btn-lg px-4 me-2">
+          <i class="fas fa-user-plus me-2"></i>Get Started
+        </a>
+        <a href="/auth/login" class="btn btn-outline-primary btn-lg px-4">
+          <i class="fas fa-sign-in-alt me-2"></i>Login
+        </a>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="row text-center">
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="fas fa-list-check fa-3x text-primary mb-3"></i>
+          <h5 class="card-title">Organize Tasks</h5>
+          <p class="card-text">Keep track of all your tasks in one place with priorities and due dates.</p>
+        </div>
+      </div>
     </div>
-  <% } else { %>
-    <a href="/dashboard" class="btn btn-success btn-lg mt-4">Go to Dashboard</a>
-  <% } %>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+          <h5 class="card-title">Track Progress</h5>
+          <p class="card-text">Monitor your productivity and see how much you accomplish each day.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="fas fa-users fa-3x text-info mb-3"></i>
+          <h5 class="card-title">Stay Organized</h5>
+          <p class="card-text">Simple and intuitive interface to help you focus on what matters most.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <%- include('partials/footer') %>

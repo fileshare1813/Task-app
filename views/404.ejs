@@ -1,8 +1,14 @@
-<%- include('partials/header', { title: 'Page Not Found' }) %>
+<%- include('partials/header', { title: 'Server Error' }) %>
 
 <div class="container text-center mt-5">
-  <h1 class="display-1">404</h1>
-  <p class="lead">Oops! The page you're looking for doesn't exist.</p>
+  <h1 class="display-1 text-danger">500</h1>
+  <h2>Internal Server Error</h2>
+  <p class="lead">Something went wrong on our end. Please try again later.</p>
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-danger mt-3">
+      <%= message %>
+    </div>
+  <% } %>
   <a href="/" class="btn btn-primary mt-3">Go to Homepage</a>
 </div>
 

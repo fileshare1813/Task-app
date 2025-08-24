@@ -1,16 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const { ensureAuthenticated } = require('../config/auth');
 
 // Update profile route
-router.put('/profile', async (req, res) => {
+router.post('/profile', ensureAuthenticated, async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user._id, { name: req.body.name });
-    req.flash('info', 'आपका प्रोफाइल अपडेट हो गया है');
+    const { name } = req.body;
+    
+    if (!name || name.trim() === '') {
+      req.flash('error', 'Name cannot be empty');
+      return res.redirect('/profile');
+    }
+
+    await User.findByIdAndUpdate(req.user._id, { 
+      name: name.trim() 
+    });
+    
+    // Update the session user object
+    req.user.name = name.trim();
+    
+    console.log('✅ Profile updated for:', req.user.email);
+    req.flash('success', 'Profile updated successfully!');
     res.redirect('/profile');
+    
   } catch (err) {
-    req.flash('error', 'प्रोफाइल अपडेट करने में त्रुटि');
-    res.redirect('/profile/edit');
+    console.error('❌ Profile update error:', err);
+    req.flash('error', 'Error updating profile. Please try again.');
+    res.redirect('/profile');
   }
 });
 

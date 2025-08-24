@@ -1,0 +1,110 @@
+<%- include('partials/header', { title: 'Edit Task' }) %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-edit me-2"></i>Edit Task
+          </h4>
+        </div>
+        
+        <div class="card-body">
+          <%- include('partials/alerts') %>
+          
+          <form action="/tasks/<%= task._id %>/update" method="POST">
+            <div class="mb-3">
+              <label for="title" class="form-label">
+                <i class="fas fa-heading me-2"></i>Title *
+              </label>
+              <input type="text" class="form-control" id="title" name="title" 
+                     value="<%= task.title %>" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="description" class="form-label">
+                <i class="fas fa-align-left me-2"></i>Description
+              </label>
+              <textarea class="form-control" id="description" name="description" 
+                        rows="3" placeholder="Enter task description..."><%= task.description || '' %></textarea>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="priority" class="form-label">
+                  <i class="fas fa-flag me-2"></i>Priority
+                </label>
+                <select class="form-select" id="priority" name="priority">
+                  <option value="low" <%= task.priority === 'low' ? 'selected' : '' %>>
+                    <i class="fas fa-arrow-down text-success"></i> Low
+                  </option>
+                  <option value="medium" <%= task.priority === 'medium' ? 'selected' : '' %>>
+                    <i class="fas fa-arrow-right text-warning"></i> Medium
+                  </option>
+                  <option value="high" <%= task.priority === 'high' ? 'selected' : '' %>>
+                    <i class="fas fa-arrow-up text-danger"></i> High
+                  </option>
+                </select>
+              </div>
+              
+              <div class="col-md-6">
+                <label for="dueDate" class="form-label">
+                  <i class="fas fa-calendar-alt me-2"></i>Due Date
+                </label>
+                <input type="date" class="form-control" id="dueDate" name="dueDate" 
+                       value="<%= task.dueDate ? task.dueDate.toISOString().split('T')[0] : '' %>">
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="completed" 
+                       <%= task.completed ? 'checked' : '' %> disabled>
+                <label class="form-check-label" for="completed">
+                  <i class="fas fa-check-circle me-2 <%= task.completed ? 'text-success' : 'text-muted' %>"></i>
+                  Task Completed
+                </label>
+              </div>
+              <small class="text-muted">Use the complete button on dashboard to change completion status.</small>
+            </div>
+            
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="/dashboard" class="btn btn-secondary">
+                <i class="fas fa-times me-2"></i>Cancel
+              </a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Update Task
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="card-footer bg-light">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+              <i class="fas fa-calendar-plus me-1"></i>
+              Created: <%= new Date(task.createdAt).toLocaleDateString() %>
+            </small>
+            <div>
+              <form action="/tasks/<%= task._id %>/complete" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-sm <%= task.completed ? 'btn-warning' : 'btn-success' %>">
+                  <i class="fas <%= task.completed ? 'fa-undo' : 'fa-check' %> me-1"></i>
+                  <%= task.completed ? 'Mark Incomplete' : 'Mark Complete' %>
+                </button>
+              </form>
+              <form action="/tasks/<%= task._id %>/delete" method="POST" class="d-inline ms-2">
+                <button type="submit" class="btn btn-sm btn-danger" 
+                        onclick="return confirm('Are you sure you want to delete this task?')">
+                  <i class="fas fa-trash me-1"></i>Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
