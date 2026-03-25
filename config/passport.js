@@ -21,30 +21,51 @@ module.exports = function(passport) {
     })
   );
 
-  // Google Strategy
-  passport.use(
-    new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: '/auth/google/callback'
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ googleId: profile.id });
-        
-        if (!user) {
-          user = await User.create({
-            googleId: profile.id,
-            name: profile.displayName,
-            email: profile.emails[0].value
-          });
-        }
-        return done(null, user);
-      } catch (err) {
-        return done(err);
+ // Google Strategy
+passport.use(
+  new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: '/auth/google/callback'
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      // Email check karo pehle
+      const email = profile.emails && profile.emails[0] 
+        ? profile.emails[0].value 
+        : null;
+
+      if (!email) {
+        return done(null, false, { message: 'Google account me email nahi mili' });
       }
-    })
-  );
+
+      // Pehle email se dhundho (agar local account hai)
+      let user = await User.findOne({ 
+        $or: [{ googleId: profile.id }, { email: email }] 
+      });
+      
+      if (user) {
+        // Agar user mila par googleId nahi hai, update karo
+        if (!user.googleId) {
+          user.googleId = profile.id;
+          await user.save();
+        }
+      } else {
+        // Naya user banao
+        user = await User.create({
+          googleId: profile.id,
+          name: profile.displayName,
+          email: email
+        });
+      }
+      
+      return done(null, user);
+    } catch (err) {
+      console.error('Google auth error:', err);
+      return done(err);
+    }
+  })
+);
 
   // Session serialization
   passport.serializeUser((user, done) => done(null, user.id));
