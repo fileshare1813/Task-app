@@ -28,7 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.set('trust proxy', 1); // 🔥 Render ke liye must
 
 // Session setup
 app.use(session({
@@ -37,10 +36,9 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
   cookie: { 
-    maxAge: 1000 * 60 * 60 * 24,
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none' // 🔥 Google OAuth fix
+    secure: process.env.NODE_ENV === 'production'
   }
 }));
 
